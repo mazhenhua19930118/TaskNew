@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.task.mapper.TaskMapper">
+    <resultMap id="TaskMap" type="com.example.task.entity.Task">
+        <id column="id" property="id"/>
+        <result column="TASK_NAME" jdbcType="VARCHAR" property="taskName"/>
+        <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
+        <result column="TASK_KIND" jdbcType="VARCHAR" property="taskKind"/>
+        <result column="START_RANK" jdbcType="VARCHAR" property="startRank"/>
+        <result column="END_RANK" jdbcType="VARCHAR" property="endRank"/>
+        <result column="MONEY" jdbcType="DECIMAL" property="money"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="TASK_NUMBER" jdbcType="VARCHAR" property="taskNumber"/>
+    </resultMap>
+    <!--创建任务-->
+    <insert id="add" parameterType="com.example.task.entity.Task">
+        insert into t_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskName!='' or taskName!=null">
+                TASK_NAME,
+            </if>
+            <if test="startTime!=null">
+                START_TIME,
+            </if>
+            <if test="endTime!=null">
+                END_TIME,
+            </if>
+            <if test="userName!='' or userName!=null">
+                USER_NAME,
+            </if>
+            <if test="taskKind!='' or taskKind!=null">
+                TASK_KIND,
+            </if>
+            <if test="startRank!='' or startRank!=null">
+                START_RANK,
+            </if>
+            <if test="endRank!='' or endRank!=null">
+                END_RANK,
+            </if>
+            <if test="money!='' or money!=null">
+                MONEY,
+            </if>
+            STATUS,TASK_NUMBER
+        </trim>
+
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="taskName!='' or taskName!=null">
+                #{taskName},
+            </if>
+            <if test="startTime!=null">
+                #{startTime},
+            </if>
+            <if test="endTime!=null">
+                #{endTime},
+            </if>
+            <if test="userName!='' or userName!=null">
+                #{userName},
+            </if>
+            <if test="taskKind!='' or taskKind!=null">
+                #{taskKind},
+            </if>
+            <if test="startRank!='' or startRank!=null">
+                #{startRank},
+            </if>
+            <if test="endRank!='' or endRank!=null">
+                #{endRank},
+            </if>
+            <if test="money!='' or money!=null">
+                #{money},
+            </if>
+            #{status},#{taskNumber}
+        </trim>
+    </insert>
+
+    <insert id="addList" parameterType="com.example.task.entity.Task">
+        insert into t_task(
+        TASK_NAME,
+        START_TIME,
+        END_TIME,
+        USER_NAME,
+        TASK_KIND,
+        START_RANK,
+        END_RANK,
+        MONEY,
+        STATUS,
+        TASK_NUMBER
+        )values
+        <foreach collection="list" item="generaltable" separator=",">
+            (
+            #{generaltable.taskName},
+            #{generaltable.startTime},
+            #{generaltable.endTime},
+            #{generaltable.userName},
+            #{generaltable.taskKind},
+            #{generaltable.startRank},
+            #{generaltable.endRank},
+            #{generaltable.money},
+            #{generaltable.status},
+            #{generaltable.taskNumber}
+            )
+        </foreach>
+    </insert>
+
+    <!--查询所有任务-->
+    <select id="findAll" resultMap="TaskMap" parameterType="java.lang.String">
+        select * from t_task
+        <if test=" status == '0'.toString ">
+            where STATUS = 0
+        </if>
+        <if test=" status == '1'.toString ">
+            where STATUS = 1
+        </if>
+    </select>
+    <update id="pass" parameterType="com.example.task.entity.Task">
+        update t_task set STATUS = #{status}
+        where TASK_NUMBER =#{taskNumber}
+    </update>
+</mapper>

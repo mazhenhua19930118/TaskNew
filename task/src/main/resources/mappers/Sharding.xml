@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.task.mapper.ShardingMapper">
+    <resultMap id="UserShardingMap" type="com.example.task.sharding.UserSharding">
+        <id column="id" property="id"/>
+        <result column="USERNAME" jdbcType="VARCHAR" property="username"/>
+        <result column="AGE" jdbcType="INTEGER" property="age"/>
+        <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday"/>
+        <result column="CMD" jdbcType="VARCHAR" property="cmd"/>
+    </resultMap>
+    <!--分表-->
+    <insert id="shardingInsert" parameterType="com.example.task.sharding.UserSharding">
+        insert into user
+        (USERNAME,AGE,BIRTHDAY,CMD)values (#{username},#{age},#{birthday},#{cmd})
+    </insert>
+    <!--分库分表-->
+    <insert id="shardingInsertDateBase" parameterType="com.example.task.sharding.UserSharding">
+        insert into user
+        (USERNAME,AGE,BIRTHDAY,CMD)values (#{username},#{age},#{birthday},#{cmd})
+    </insert>
+    <!--读写分离-->
+    <select id="select" resultMap="UserShardingMap" parameterType="com.example.task.sharding.UserSharding">
+            select USERNAME,AGE
+            from user
+            where USERNAME = #{username,jdbcType=VARCHAR}
+        </select>
+
+</mapper>
