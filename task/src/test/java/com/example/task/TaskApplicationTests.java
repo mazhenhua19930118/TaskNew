@@ -426,6 +426,5 @@ class TaskApplicationTests {
         user2.setUsername("李四");
         UserSharding user3 = shardingMapper.select(user2);
         System.out.println(user3.getUsername());
-
     }
 }
